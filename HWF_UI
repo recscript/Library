@@ -283,7 +283,7 @@ function HWF_CatchFish:AddDropdown(config)
         local Item = Instance.new("TextButton")
         Item.Size = UDim2.new(1, 0, 0, 26) Item.BackgroundTransparency = 1
         Item.Text = "     " .. tostring(v) Item.TextColor3 = Color3.fromRGB(170, 170, 170)
-        Item.Font = Enum.Font.Gotham Item.TextSize = 11 Item.TextXAlignment = Enum.TextXAlignment.Left Item.Parent = ListContainer
+        Item.Font = Enum.Font.GothamBold Item.TextSize = 11 Item.TextXAlignment = Enum.TextXAlignment.Left Item.Parent = ListContainer
         
         local ActiveLine = Instance.new("Frame")
         ActiveLine.Size = UDim2.new(0, 3, 1, -4) ActiveLine.Position = UDim2.new(0, 4, 0, 2)
@@ -316,7 +316,7 @@ function HWF_CatchFish:AddToggle(config)
     local Label = Instance.new("TextLabel")
     Label.Size = UDim2.new(1, -50, 1, 0) Label.Position = UDim2.new(0, 8, 0, 0) Label.BackgroundTransparency = 1
     Label.Text = name Label.TextColor3 = Color3.fromRGB(200, 200, 200)
-    Label.Font = Enum.Font.Gotham Label.TextSize = 12 Label.TextXAlignment = Enum.TextXAlignment.Left Label.Parent = TglFrame
+    Label.Font = Enum.Font.GothamBold Label.TextSize = 12 Label.TextXAlignment = Enum.TextXAlignment.Left Label.Parent = TglFrame
     
     local ToggleBg = Instance.new("TextButton")
     ToggleBg.Size = UDim2.new(0, 36, 0, 18) ToggleBg.Position = UDim2.new(1, -44, 0.5, -9)
@@ -356,7 +356,7 @@ function HWF_CatchFish:AddButton(config)
     
     local Btn = Instance.new("TextButton")
     Btn.Size = UDim2.new(1, -4, 0, 32) Btn.BackgroundColor3 = Color3.fromRGB(30,30,30)
-    Btn.Text = name Btn.TextColor3 = Color3.fromRGB(230, 230, 230) Btn.Font = Enum.Font.GothamSemibold Btn.TextSize = 12 Btn.Parent = self.Container
+    Btn.Text = name Btn.TextColor3 = Color3.fromRGB(230, 230, 230) Btn.Font = Enum.Font.GothamBold Btn.TextSize = 12 Btn.Parent = self.Container
     
     local Corner = Instance.new("UICorner") Corner.CornerRadius = UDim.new(0, 4) Corner.Parent = Btn
     local Border = Instance.new("UIStroke") Border.Color = Color3.fromRGB(40, 40, 40) Border.Parent = Btn
@@ -385,10 +385,10 @@ function HWF_CatchFish:AddSlider(config)
     
     local Label = Instance.new("TextLabel")
     Label.Size = UDim2.new(1, -16, 0, 15) Label.Position = UDim2.new(0, 8, 0, 3) Label.BackgroundTransparency = 1
-    Label.Text = name .. ": " .. default Label.TextColor3 = Color3.fromRGB(200, 200, 200) Label.Font = Enum.Font.Gotham Label.TextSize = 11 Label.TextXAlignment = Enum.TextXAlignment.Left Label.Parent = SFrame
+    Label.Text = name .. ": " .. default Label.TextColor3 = Color3.fromRGB(200, 200, 200) Label.Font = Enum.Font.GothamBold Label.TextSize = 11 Label.TextXAlignment = Enum.TextXAlignment.Left Label.Parent = SFrame
     
     local SliderBg = Instance.new("TextButton")
-    SliderBg.Size = UDim2.new(1, -16, 0, 10) SliderBg.Position = UDim2.new(0, 8, 0, 28) SliderBg.BackgroundColor3 = Color3.fromRGB(30, 30, 30) SliderBg.Text = "" SliderBg.Parent = SFrame
+    SliderBg.Size = UDim2.new(1, -16, 0, 10) SliderBg.Position = UDim2.new(0, 8, 0, 28) SliderBg.BackgroundColor3 = Color3.fromRGB(45, 45, 45) SliderBg.Text = "" SliderBg.Parent = SFrame
     local SCorner = Instance.new("UICorner") SCorner.CornerRadius = UDim.new(0,2) SCorner.Parent = SliderBg
     
     local SliderFill = Instance.new("Frame")
