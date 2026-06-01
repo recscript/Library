@@ -28,6 +28,7 @@ function HWF_CatchFish.Init(config)
     self.MainButton.Position = UDim2.new(0, 15, 0.4, 0)
     self.MainButton.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
     self.MainButton.Image = toggleicon
+    self.MainButton.ImageColor3 = Color3.new(1,1,1)
     self.MainButton.Parent = self.ScreenGui
     
     local UICorner = Instance.new("UICorner") UICorner.CornerRadius = UDim.new(0, 5) UICorner.Parent = self.MainButton
@@ -244,15 +245,15 @@ function HWF_CatchFish:AddDropdown(config)
     local callback = config.Callback or function() end
     
     local DropFrame = Instance.new("Frame")
-    DropFrame.Size = UDim2.new(1, -4, 0, 32) DropFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15) DropFrame.ClipsDescendants = true DropFrame.Parent = self.Container
+    DropFrame.Size = UDim2.new(1, -4, 0, 32) DropFrame.BackgroundColor3 = Color3.fromRGB(30,30,30) DropFrame.ClipsDescendants = true DropFrame.Parent = self.Container
     
     local Corner = Instance.new("UICorner") Corner.CornerRadius = UDim.new(0, 4) Corner.Parent = DropFrame
     local Border = Instance.new("UIStroke") Border.Color = Color3.fromRGB(35, 35, 35) Border.Parent = DropFrame
     
     local DropBtn = Instance.new("TextButton")
     DropBtn.Size = UDim2.new(1, 0, 0, 32) DropBtn.BackgroundTransparency = 1
-    DropBtn.Text = "  " .. name .. ": " .. default DropBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
-    DropBtn.Font = Enum.Font.Gotham DropBtn.TextSize = 12 DropBtn.TextXAlignment = Enum.TextXAlignment.Left DropBtn.Parent = DropFrame
+    DropBtn.Text = "  " .. name .. " : " .. default DropBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+    DropBtn.Font = Enum.Font.GothamBold DropBtn.TextSize = 12 DropBtn.TextXAlignment = Enum.TextXAlignment.Left DropBtn.Parent = DropFrame
     
     local Arrow = Instance.new("TextLabel")
     Arrow.Size = UDim2.new(0, 20, 0, 20) Arrow.BackgroundTransparency = 1 Arrow.Text = "▶" Arrow.TextColor3 = Color3.fromRGB(120, 120, 120)
@@ -307,7 +308,7 @@ function HWF_CatchFish:AddToggle(config)
     local callback = config.Callback or function() end
     
     local TglFrame = Instance.new("Frame")
-    TglFrame.Size = UDim2.new(1, -4, 0, 32) TglFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15) TglFrame.Parent = self.Container
+    TglFrame.Size = UDim2.new(1, -4, 0, 32) TglFrame.BackgroundColor3 = Color3.fromRGB(30,30,30) TglFrame.Parent = self.Container
     
     local Corner = Instance.new("UICorner") Corner.CornerRadius = UDim.new(0, 4) Corner.Parent = TglFrame
     local Border = Instance.new("UIStroke") Border.Color = Color3.fromRGB(35, 35, 35) Border.Parent = TglFrame
@@ -354,14 +355,14 @@ function HWF_CatchFish:AddButton(config)
     local callback = config.Callback or function() end
     
     local Btn = Instance.new("TextButton")
-    Btn.Size = UDim2.new(1, -4, 0, 32) Btn.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+    Btn.Size = UDim2.new(1, -4, 0, 32) Btn.BackgroundColor3 = Color3.fromRGB(30,30,30)
     Btn.Text = name Btn.TextColor3 = Color3.fromRGB(230, 230, 230) Btn.Font = Enum.Font.GothamSemibold Btn.TextSize = 12 Btn.Parent = self.Container
     
     local Corner = Instance.new("UICorner") Corner.CornerRadius = UDim.new(0, 4) Corner.Parent = Btn
     local Border = Instance.new("UIStroke") Border.Color = Color3.fromRGB(40, 40, 40) Border.Parent = Btn
     
-    Btn.MouseButton1Down:Connect(function() Btn.BackgroundColor3 = Color3.fromRGB(25, 25, 25) end)
-    Btn.MouseButton1Up:Connect(function() Btn.BackgroundColor3 = Color3.fromRGB(18, 18, 18) end)
+    Btn.MouseButton1Down:Connect(function() Btn.BackgroundColor3 = Color3.fromRGB(40,40,40) end)
+    Btn.MouseButton1Up:Connect(function() Btn.BackgroundColor3 = Color3.fromRGB(30,30,30) end)
     Btn.MouseButton1Click:Connect(callback)
     return self
 end
@@ -377,7 +378,7 @@ function HWF_CatchFish:AddSlider(config)
     local callback = config.Callback or function() end
     
     local SFrame = Instance.new("Frame")
-    SFrame.Size = UDim2.new(1, -4, 0, 40) SFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15) SFrame.Parent = self.Container
+    SFrame.Size = UDim2.new(1, -4, 0, 40) SFrame.BackgroundColor3 = Color3.fromRGB(30,30,30) SFrame.Parent = self.Container
     
     local Corner = Instance.new("UICorner") Corner.CornerRadius = UDim.new(0, 4) Corner.Parent = SFrame
     local Border = Instance.new("UIStroke") Border.Color = Color3.fromRGB(35, 35, 35) Border.Parent = SFrame
@@ -412,7 +413,7 @@ return HWF_CatchFish
 ---------------------------------------------------------------------------
 -- KHỞI CHẠY TEST: SIDEBAR PHẢI + CHỈ HIỂN THỊ ICON
 ---------------------------------------------------------------------------
-local UI = HWF_CatchFish.Init()
+local UI = HWF_CatchFish.Init({Title = "lol"})
 
 -- Chỉ truyền IconId khi tạo Tab, không có chữ (Text)
 local Tab1 = UI:CreateTab("rbxassetid://10734950309") -- Icon cây cần câu/treo máy
