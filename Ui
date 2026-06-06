@@ -1,0 +1,509 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
+
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui", 10) or LocalPlayer.PlayerGui
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "MagnetUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+
+local success, _ = pcall(function() ScreenGui.Parent = CoreGui end)
+if not success or not ScreenGui.Parent then ScreenGui.Parent = PlayerGui end
+
+local Theme = {
+    Background = Color3.fromRGB(20, 20, 22),
+    Sidebar = Color3.fromRGB(15, 15, 16),
+    MainAccent = Color3.fromRGB(139, 92, 246), 
+    TextMain = Color3.fromRGB(244, 244, 245),
+    TextDark = Color3.fromRGB(143, 143, 152),
+    ElementBg = Color3.fromRGB(28, 28, 30),
+    ElementHover = Color3.fromRGB(34, 34, 37),
+    Border = Color3.fromRGB(40, 40, 42),
+    White = Color3.fromRGB(255, 255, 255)
+}
+
+local UILocked = false 
+local AllElements = {}
+local DropdownRegistry = {}
+
+task.spawn(function()
+    local ToggleUIButton = Instance.new("TextButton")
+    local ButtonCorner = Instance.new("UICorner")
+    local ButtonStroke = Instance.new("UIStroke")
+
+    ToggleUIButton.Name = "ToggleUIButton"
+    ToggleUIButton.Parent = ScreenGui
+    ToggleUIButton.Size = UDim2.new(0, 44, 0, 44)
+    ToggleUIButton.Position = UDim2.new(0, 20, 0, 20)
+    ToggleUIButton.BackgroundColor3 = Theme.Sidebar
+    ToggleUIButton.Text = "✧"
+    ToggleUIButton.TextColor3 = Theme.MainAccent
+    ToggleUIButton.TextSize = 20
+    ToggleUIButton.Font = Enum.Font.GothamBold
+    ToggleUIButton.ZIndex = 99999
+
+    ButtonCorner.CornerRadius = UDim.new(0, 8)
+    ButtonCorner.Parent = ToggleUIButton
+    ButtonStroke.Color = Theme.Border
+    ButtonStroke.Parent = ToggleUIButton
+
+    -- [[ KHUNG GIAO DIỆN CHÍNH (MAGNET UI) ]] --
+    local MainFrame = Instance.new("Frame")
+    local MainCorner = Instance.new("UICorner")
+    local MainStroke = Instance.new("UIStroke")
+
+    MainFrame.Name = "MainFrame"
+    MainFrame.Parent = ScreenGui
+    MainFrame.Size = UDim2.new(0, 550, 0, 340)
+    MainFrame.Position = UDim2.new(0.5, -275, 0.5, -170)
+    MainFrame.BackgroundColor3 = Theme.Background
+    MainFrame.ZIndex = 10
+
+    MainCorner.CornerRadius = UDim.new(0, 8)
+    MainCorner.Parent = MainFrame
+    MainStroke.Color = Theme.Border
+    MainStroke.Thickness = 1
+    MainStroke.Parent = MainFrame
+
+    -- [[ THANH TIÊU ĐỀ (TOP BAR) ]] --
+    local TopBar = Instance.new("Frame")
+    local TopBarTitle = Instance.new("TextLabel")
+    local LockButton = Instance.new("TextButton") 
+
+    TopBar.Name = "TopBar"
+    TopBar.Parent = MainFrame
+    TopBar.Size = UDim2.new(1, 0, 0, 38)
+    TopBar.BackgroundTransparency = 1
+    TopBar.ZIndex = 12
+
+    TopBarTitle.Parent = TopBar
+    TopBarTitle.Size = UDim2.new(0, 180, 1, 0)
+    TopBarTitle.Position = UDim2.new(0, 12, 0, 0)
+    TopBarTitle.BackgroundTransparency = 1
+    TopBarTitle.Text = "MAGNET.UI // INTERFACE"
+    TopBarTitle.TextColor3 = Theme.TextMain
+    TopBarTitle.TextXAlignment = Enum.TextXAlignment.Left
+    TopBarTitle.Font = Enum.Font.Code
+    TopBarTitle.TextSize = 12
+    TopBarTitle.ZIndex = 13
+
+    LockButton.Name = "LockButton"
+    LockButton.Parent = TopBar
+    LockButton.Size = UDim2.new(0, 90, 0, 24)
+    LockButton.Position = UDim2.new(0, 200, 0.5, -12)
+    LockButton.BackgroundColor3 = Theme.ElementBg
+    LockButton.Text = "UI UNLOCKED"
+    LockButton.TextColor3 = Theme.TextMain
+    LockButton.Font = Enum.Font.GothamBold
+    LockButton.TextSize = 9
+    LockButton.ZIndex = 13
+
+    local LockCorner = Instance.new("UICorner")
+    LockCorner.CornerRadius = UDim.new(0, 4)
+    LockCorner.Parent = LockButton
+    local LockStroke = Instance.new("UIStroke")
+    LockStroke.Color = Theme.MainAccent
+    LockStroke.Parent = LockButton
+
+    LockButton.MouseButton1Click:Connect(function()
+        UILocked = not UILocked
+        LockButton.Text = UILocked and "UI LOCKED" or "UI UNLOCKED"
+        LockButton.BackgroundColor3 = UILocked and Theme.MainAccent or Theme.ElementBg
+        LockButton.TextColor3 = UILocked and Theme.White or Theme.TextMain
+    end)
+
+    -- [[ THANH TÌM KIẾM THỜI GIAN THỰC ]] --
+    local SearchFrame = Instance.new("Frame")
+    local SearchCorner = Instance.new("UICorner")
+    local SearchStroke = Instance.new("UIStroke")
+    local SearchBox = Instance.new("TextBox")
+
+    SearchFrame.Name = "SearchFrame"
+    SearchFrame.Parent = TopBar
+    SearchFrame.Size = UDim2.new(0, 140, 0, 24)
+    SearchFrame.Position = UDim2.new(1, -152, 0.5, -12)
+    SearchFrame.BackgroundColor3 = Theme.Sidebar
+    SearchFrame.ZIndex = 13
+
+    SearchCorner.CornerRadius = UDim.new(0, 5)
+    SearchCorner.Parent = SearchFrame
+    SearchStroke.Color = Theme.Border
+    SearchStroke.Parent = SearchFrame
+
+    SearchBox.Parent = SearchFrame
+    SearchBox.Size = UDim2.new(1, -10, 1, 0)
+    SearchBox.Position = UDim2.new(0, 8, 0, 0)
+    SearchBox.BackgroundTransparency = 1
+    SearchBox.Text = ""
+    SearchBox.PlaceholderText = "Tìm kiếm..."
+    SearchBox.PlaceholderColor3 = Theme.TextDark
+    SearchBox.TextColor3 = Theme.TextMain
+    SearchBox.TextSize = 11
+    SearchBox.Font = Enum.Font.Gotham
+    SearchBox.ZIndex = 14
+
+    SearchBox:GetPropertyChangedSignal("Text"):Connect(function()
+        local SearchText = string.lower(SearchBox.Text)
+        for _, item in pairs(AllElements) do
+            if item.Frame and item.Frame:IsA("GuiObject") then
+                if SearchText == "" then
+                    item.Frame.Visible = true
+                else
+                    item.Frame.Visible = string.find(string.lower(item.Name), SearchText) and true or false
+                end
+            end
+        end
+    end)
+
+    -- [[ SIDEBAR ]] --
+    local Sidebar = Instance.new("Frame")
+    local SidebarCorner = Instance.new("UICorner")
+    local SidebarList = Instance.new("UIListLayout")
+
+    Sidebar.Name = "Sidebar"
+    Sidebar.Parent = MainFrame
+    Sidebar.Size = UDim2.new(0, 130, 1, -50)
+    Sidebar.Position = UDim2.new(0, 10, 0, 42)
+    Sidebar.BackgroundColor3 = Theme.Sidebar
+    Sidebar.ZIndex = 11
+
+    SidebarCorner.CornerRadius = UDim.new(0, 6)
+    SidebarCorner.Parent = Sidebar
+    SidebarList.Parent = Sidebar
+    SidebarList.Padding = UDim.new(0, 4)
+    SidebarList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    SidebarList.SortOrder = Enum.SortOrder.LayoutOrder
+
+    -- [[ CONTENT CONTAINER ]] --
+    local ContentContainer = Instance.new("Frame")
+    ContentContainer.Parent = MainFrame
+    ContentContainer.Size = UDim2.new(1, -160, 1, -50)
+    ContentContainer.Position = UDim2.new(0, 150, 0, 42)
+    ContentContainer.BackgroundTransparency = 1
+    ContentContainer.ZIndex = 11
+
+    local Tabs = {}
+    local CurrentTab = nil
+
+    local function CreateTab(tabName)
+        local TabButton = Instance.new("TextButton")
+        local TabButtonCorner = Instance.new("UICorner")
+        
+        TabButton.Name = tabName .. "Tab"
+        TabButton.Parent = Sidebar
+        TabButton.Size = UDim2.new(0, 115, 0, 32)
+        TabButton.BackgroundTransparency = 1
+        TabButton.Text = "  " .. tabName
+        TabButton.TextColor3 = Theme.TextDark
+        TabButton.TextSize = 12
+        TabButton.Font = Enum.Font.GothamMedium
+        TabButton.TextXAlignment = Enum.TextXAlignment.Left
+        TabButton.ZIndex = 12
+        
+        TabButtonCorner.CornerRadius = UDim.new(0, 5)
+        TabButtonCorner.Parent = TabButton
+
+        local Page = Instance.new("ScrollingFrame")
+        local PageList = Instance.new("UIListLayout")
+        local PagePadding = Instance.new("UIPadding")
+        
+        Page.Name = tabName .. "Page"
+        Page.Parent = ContentContainer
+        Page.Size = UDim2.new(1, 0, 1, 0)
+        Page.BackgroundTransparency = 1
+        Page.Visible = false
+        Page.ScrollBarThickness = 3
+        Page.ScrollBarImageColor3 = Theme.MainAccent
+        Page.ZIndex = 14
+        Page.ClipsDescendants = true
+        
+        PageList.Parent = Page
+        PageList.Padding = UDim.new(0, 6)
+        PageList.SortOrder = Enum.SortOrder.LayoutOrder
+        
+        PagePadding.Parent = Page
+        PagePadding.PaddingTop = UDim.new(0, 2)
+        PagePadding.PaddingLeft = UDim.new(0, 2)
+        PagePadding.PaddingRight = UDim.new(0, 6)
+
+        PageList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            Page.CanvasSize = UDim2.new(0, 0, 0, PageList.AbsoluteContentSize.Y + 25)
+        end)
+
+        TabButton.MouseButton1Click:Connect(function()
+            for _, t in pairs(Tabs) do
+                t.Page.Visible = false
+                TweenService:Create(t.Button, TweenInfo.new(0.2), {BackgroundTransparency = 1, TextColor3 = Theme.TextDark}):Play()
+            end
+            Page.Visible = true
+            TweenService:Create(TabButton, TweenInfo.new(0.2), {BackgroundTransparency = 0.8, BackgroundColor3 = Theme.MainAccent, TextColor3 = Theme.TextMain}):Play()
+        end)
+
+        Tabs[tabName] = {Button = TabButton, Page = Page}
+        if CurrentTab == nil then
+            CurrentTab = tabName
+            Page.Visible = true
+            TabButton.BackgroundTransparency = 0.8
+            TabButton.BackgroundColor3 = Theme.MainAccent
+            TabButton.TextColor3 = Theme.TextMain
+        end
+        return Page
+    end
+
+    local MainTab = CreateTab("Main UI")
+    local TestTab = CreateTab("Test Scroll")
+    local SettingTab = CreateTab("Setting")
+
+    -- [[ 1. THÀNH PHẦN SLIDER HOÀN CHỈNH + Ô NHẬP SỐ TRỰC TIẾP ]] --
+    local function AddSlider(parentPage, text, min, max, startVal)
+        local Frame = Instance.new("Frame")
+        local Corner = Instance.new("UICorner")
+        local Stroke = Instance.new("UIStroke")
+        local Label = Instance.new("TextLabel")
+        local SliderButton = Instance.new("TextButton") 
+        local SliderFill = Instance.new("Frame")
+        local SquareKnob = Instance.new("Frame") 
+        local ValueBox = Instance.new("TextBox")
+        local BoxCorner = Instance.new("UICorner")
+        local BoxStroke = Instance.new("UIStroke")
+
+        Frame.Size = UDim2.new(1, 0, 0, 50)
+        Frame.BackgroundColor3 = Theme.ElementBg
+        Frame.ZIndex = 15
+        Frame.Parent = parentPage
+        
+        Corner.CornerRadius = UDim.new(0, 5)
+        Corner.Parent = Frame
+        Stroke.Color = Theme.Border
+        Stroke.Parent = Frame
+        
+        Label.Size = UDim2.new(0.5, 0, 0, 22)
+        Label.Position = UDim2.new(0, 12, 0, 4)
+        Label.BackgroundTransparency = 1
+        Label.Text = text
+        Label.TextColor3 = Theme.TextMain
+        Label.Font = Enum.Font.GothamMedium
+        Label.TextSize = 12
+        Label.TextXAlignment = Enum.TextXAlignment.Left
+        Label.ZIndex = 16
+        Label.Parent = Frame
+        
+        -- Ô hiển thị số nhỏ bên ngón tay chỉ (Cho phép bấm vào gõ số)
+        ValueBox.Size = UDim2.new(0, 45, 0, 20)
+        ValueBox.Position = UDim2.new(1, -57, 0, 6)
+        ValueBox.BackgroundColor3 = Theme.Sidebar
+        ValueBox.Text = tostring(startVal)
+        ValueBox.TextColor3 = Theme.MainAccent
+        ValueBox.Font = Enum.Font.Code
+        ValueBox.TextSize = 11
+        ValueBox.ZIndex = 17
+        ValueBox.ClearTextOnFocus = false
+        ValueBox.Parent = Frame
+
+        BoxCorner.CornerRadius = UDim.new(0, 4)
+        BoxCorner.Parent = ValueBox
+        BoxStroke.Color = Theme.Border
+        BoxStroke.Parent = ValueBox
+        
+        SliderButton.Size = UDim2.new(1, -24, 0, 4)
+        SliderButton.Position = UDim2.new(0, 12, 1, -12)
+        SliderButton.BackgroundColor3 = Color3.fromRGB(50, 50, 52)
+        SliderButton.Text = ""
+        SliderButton.AutoButtonColor = false
+        SliderButton.ZIndex = 16
+        SliderButton.Parent = Frame
+        
+        local SBCorner = Instance.new("UICorner")
+        SBCorner.CornerRadius = UDim.new(1,0)
+        SBCorner.Parent = SliderButton
+        
+        SliderFill.Size = UDim2.new((startVal - min) / (max - min), 0, 1, 0)
+        SliderFill.BackgroundColor3 = Theme.MainAccent
+        SliderFill.ZIndex = 17
+        SliderFill.Parent = SliderButton
+        
+        SquareKnob.Size = UDim2.new(0, 10, 0, 10)
+        SquareKnob.Position = UDim2.new(1, -5, 0.5, -5)
+        SquareKnob.BackgroundColor3 = Theme.White
+        SquareKnob.BorderSizePixel = 0
+        SquareKnob.ZIndex = 18
+        SquareKnob.Parent = SliderFill
+
+        local function UpdateSliderFromPercent(percentage)
+            percentage = math.clamp(percentage, 0, 1)
+            SliderFill.Size = UDim2.new(percentage, 0, 1, 0)
+            local RealValue = math.floor(min + (max - min) * percentage)
+            ValueBox.Text = tostring(RealValue)
+        end
+
+        local IsDragging = false
+        SliderButton.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                IsDragging = true
+                local Percentage = (input.Position.X - SliderButton.AbsolutePosition.X) / SliderButton.AbsoluteSize.X
+                UpdateSliderFromPercent(Percentage)
+            end
+        end)
+
+        UserInputService.InputChanged:Connect(function(input)
+            if IsDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+                local Percentage = (input.Position.X - SliderButton.AbsolutePosition.X) / SliderButton.AbsoluteSize.X
+                UpdateSliderFromPercent(Percentage)
+            end
+        end)
+
+        UserInputService.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                IsDragging = false
+            end
+        end)
+
+        ValueBox.FocusLost:Connect(function()
+            local GivenNum = tonumber(ValueBox.Text)
+            if not GivenNum then GivenNum = min end
+            GivenNum = math.clamp(GivenNum, min, max)
+            ValueBox.Text = tostring(GivenNum)
+            local NewPercent = (GivenNum - min) / (max - min)
+            SliderFill.Size = UDim2.new(NewPercent, 0, 1, 0)
+        end)
+
+        table.insert(AllElements, {Name = text, Frame = Frame})
+    end
+
+    -- [[ 2. CHUẨN HOÁ DROPDOWN CHO MOBILE (FIX LỖI NÚT NHỎ VÀ MẤT CHỮ CỦA CHỦ THỚT) ]] --
+    local function AddDropdown(parentPage, text, options, isMultiSelect, uniqueID)
+        local Frame = Instance.new("Frame")
+        local Corner = Instance.new("UICorner")
+        local Stroke = Instance.new("UIStroke")
+        local Label = Instance.new("TextLabel")
+        local DropBtn = Instance.new("TextButton")
+        local DropText = Instance.new("TextLabel")
+        
+        Frame.Size = UDim2.new(1, 0, 0, 38)
+        Frame.BackgroundColor3 = Theme.ElementBg
+        Frame.ZIndex = 15
+        Frame.Parent = parentPage
+        
+        Corner.CornerRadius = UDim.new(0, 5)
+        Corner.Parent = Frame
+        Stroke.Color = Theme.Border
+        Stroke.Parent = Frame
+        
+        Label.Size = UDim2.new(0.5, 0, 1, 0)
+        Label.Position = UDim2.new(0, 12, 0, 0)
+        Label.BackgroundTransparency = 1
+        Label.Text = text
+        Label.TextColor3 = Theme.TextMain
+        Label.Font = Enum.Font.GothamMedium
+        Label.TextSize = 12
+        Label.TextXAlignment = Enum.TextXAlignment.Left
+        Label.ZIndex = 16
+        Label.Parent = Frame
+        
+        -- Ép cứng kích thước hộp bấm (Rộng 160px, Cao 26px) cố định, không bao giờ lo bị thu nhỏ thành chấm đen!
+        DropBtn.Size = UDim2.new(0, 160, 0, 26)
+        DropBtn.Position = UDim2.new(1, -172, 0.5, -13)
+        DropBtn.BackgroundColor3 = Theme.Sidebar
+        DropBtn.Text = ""
+        DropBtn.ZIndex = 20
+        DropBtn.Parent = Frame
+        
+        local DBCorner = Instance.new("UICorner")
+        DBCorner.CornerRadius = UDim.new(0, 4)
+        DBCorner.Parent = DropBtn
+        local DBStroke = Instance.new("UIStroke")
+        DBStroke.Color = Theme.Border
+        DBStroke.Parent = DropBtn
+        
+        DropText.Size = UDim2.new(1, -10, 1, 0)
+        DropText.Position = UDim2.new(0, 5, 0, 0)
+        DropText.BackgroundTransparency = 1
+        DropText.Text = (isMultiSelect and "Đã chọn (0)  ▼" or options[1] .. "  ▼")
+        DropText.TextColor3 = Theme.TextMain
+        DropText.Font = Enum.Font.Gotham
+        DropText.TextSize = 11
+        DropText.TextXAlignment = Enum.TextXAlignment.Right
+        DropText.ZIndex = 21
+        DropText.Parent = DropBtn
+
+        -- Khung chứa danh sách được đẩy ra layer độc lập, ZIndex cực cao để đè lên mọi vật cản bên dưới
+        local DropContainer = Instance.new("Frame")
+        local DropList = Instance.new("UIListLayout")
+        DropContainer.Size = UDim2.new(1, 0, 0, 0)
+        DropContainer.Position = UDim2.new(0, 0, 1, 3)
+        DropContainer.BackgroundColor3 = Theme.Sidebar
+        DropContainer.Visible = false
+        DropContainer.ZIndex = 999
+        DropContainer.Parent = DropBtn
+        
+        local DCCorner = Instance.new("UICorner")
+        DCCorner.CornerRadius = UDim.new(0, 4)
+        DCCorner.Parent = DropContainer
+        local DCStroke = Instance.new("UIStroke")
+        DCStroke.Color = Theme.MainAccent
+        DCStroke.Parent = DropContainer
+        
+        DropList.Parent = DropContainer
+        DropList.SortOrder = Enum.SortOrder.LayoutOrder
+
+        local IsOpen = false
+        local dropdownData = {
+            Close = function()
+                IsOpen = false
+                DropContainer.Visible = false
+                Frame.ZIndex = 15
+                DropBtn.ZIndex = 20
+                DropContainer.Size = UDim2.new(1, 0, 0, 0)
+            end,
+            ID = uniqueID
+        }
+        DropdownRegistry[uniqueID] = dropdownData
+
+        DropBtn.MouseButton1Click:Connect(function()
+            IsOpen = not IsOpen
+            if IsOpen then
+                -- Logic Độc Quyền: Thằng này mở thì toàn bộ các thằng khác buộc đóng
+                for id, data in pairs(DropdownRegistry) do if id ~= uniqueID then data.Close() end end
+                Frame.ZIndex = 200
+                DropBtn.ZIndex = 201
+                DropContainer.Size = UDim2.new(1, 0, 0, #options * 26)
+                DropContainer.Visible = true
+            else
+                dropdownData.Close()
+            end
+        end)
+
+        local SelectedOptions = {}
+        for _, optName in pairs(options) do
+            local OptBtn = Instance.new("TextButton")
+            OptBtn.Size = UDim2.new(1, 0, 0, 26)
+            OptBtn.BackgroundColor3 = Color3.fromRGB(0,0,0)
+            OptBtn.BackgroundTransparency = 1
+            OptBtn.Text = "  " .. optName
+            OptBtn.TextColor3 = Theme.TextDark
+            OptBtn.Font = Enum.Font.Gotham
+            OptBtn.TextSize = 11
+            OptBtn.TextXAlignment = Enum.TextXAlignment.Left
+            OptBtn.ZIndex = 1000
+            OptBtn.Parent = DropContainer
+
+            OptBtn.MouseButton1Click:Connect(function()
+                if not isMultiSelect then
+                    DropText.Text = optName .. "  ▼"
+                    dropdownData.Close()
+                else
+                    if SelectedOptions[optName] then
+                        SelectedOptions[optName] = nil
+                        OptBtn.TextColor3 = Theme.TextDark
+                    else
+                        SelectedOptions[optName] = true
+                        OptBtn.TextColor3 = Theme.MainAccent
+                    end
+                    local Count = 0
+                    for _ in pairs(SelectedOptions) do Count = Count + 1 end
+                    DropText.Text = "Đã chọn ("..tostring(Count)..")  ▼"
+                end
