@@ -56,7 +56,7 @@ local function MakeDraggable(topbarobject, object)
 
 				input.Changed:Connect(
 					function()
-						if input.UserInputState == Enum.UserInputState.End then
+						if input.UserInputState == Enum.UserInputState.End or input.UserInputState == Enum.UserInputState.Touch then
 							Dragging = false
 						end
 					end
@@ -95,6 +95,7 @@ function Flux:Window(text, bottom,mainclr,toclose)
 	local MainCorner = Instance.new("UICorner")
 	local LeftFrame = Instance.new("Frame")
 	local LeftCorner = Instance.new("UICorner")
+    local MainStroke = Instance.new("UIStroke")
 	local GlowTabHolder = Instance.new("ImageLabel")
 	local Title = Instance.new("TextLabel")
 	local BottomText = Instance.new("TextLabel")
@@ -114,6 +115,8 @@ function Flux:Window(text, bottom,mainclr,toclose)
 	MainCorner.CornerRadius = UDim.new(0, 5)
 	MainCorner.Name = "MainCorner"
 	MainCorner.Parent = MainFrame
+
+    MainStroke.Color = PresetColor
 
 	LeftFrame.Name = "LeftFrame"
 	LeftFrame.Parent = MainFrame
