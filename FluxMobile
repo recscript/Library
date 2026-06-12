@@ -2112,7 +2112,7 @@ function Flux:Window(text, bottom,mainclr,toclose)
 
 			Color.InputBegan:Connect(
 				function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 						if RainbowColorPicker then
 							return
 						end
@@ -2144,7 +2144,7 @@ function Flux:Window(text, bottom,mainclr,toclose)
 
 			Color.InputEnded:Connect(
 				function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 						if ColorInput then
 							ColorInput:Disconnect()
 						end
@@ -2154,7 +2154,7 @@ function Flux:Window(text, bottom,mainclr,toclose)
 
 			Hue.InputBegan:Connect(
 				function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 						if RainbowColorPicker then
 							return
 						end
@@ -2182,7 +2182,7 @@ function Flux:Window(text, bottom,mainclr,toclose)
 
 			Hue.InputEnded:Connect(
 				function(input)
-					if input.UserInputType == Enum.UserInputType.MouseButton1 then
+					if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 						if HueInput then
 							HueInput:Disconnect()
 						end
