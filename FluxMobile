@@ -117,6 +117,7 @@ function Flux:Window(text, bottom,mainclr,toclose)
 	MainCorner.Parent = MainFrame
 
     MainStroke.Color = PresetColor
+    MainStroke.Parent = MainFrame
 
 	LeftFrame.Name = "LeftFrame"
 	LeftFrame.Parent = MainFrame
@@ -1279,7 +1280,7 @@ function Flux:Window(text, bottom,mainclr,toclose)
 				)
 				SlideCircle.InputEnded:Connect(
 					function(input)
-						if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+						if input.UserInputType == Enum.UserInputType.MouseButton1 then
 							dragging = false
 						end
 					end
