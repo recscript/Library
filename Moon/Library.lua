@@ -14,9 +14,6 @@ TabUI.__index = TabUI
 SubTabUI.__index = SubTabUI
 SectionUI.__index = SectionUI
 
-----------------------------------------------------
--- CÁC HÀM CẬP NHẬT MÀU TOÀN DIỆN
-----------------------------------------------------
 local function ChangeAllBorderColor(color)
     if not CURRENT_WINDOW then return end
     for _, obj in ipairs(CURRENT_WINDOW.MainFrame:GetDescendants()) do
@@ -41,22 +38,19 @@ local function ChangeAllTextColor(color)
     end
 end
 
-----------------------------------------------------
--- HỆ THỐNG SKIN THEMES
-----------------------------------------------------
 local SKINS = {
-    ["Blood moon (đỏ)"]           = Color3.fromRGB(235, 50, 50),
-    ["Astro moon (xanh da trời)"]   = Color3.fromRGB(0, 195, 255),
-    ["Gold moon (vàng)"]            = Color3.fromRGB(255, 200, 50),
-    ["Love Moon (hồng)"]            = Color3.fromRGB(240, 110, 170),
-    ["Abysall moon (xanh dương đậm)"]= Color3.fromRGB(30, 90, 220),
-    ["Emerald moon (xanh lợt chuối)"]= Color3.fromRGB(120, 235, 70),
-    ["Full moon (trắng)"]           = Color3.fromRGB(240, 240, 245),
-    ["Vibrant Moon (tím)"]          = Color3.fromRGB(170, 70, 240)
+    ["Blood Moon"]           = Color3.fromRGB(235, 50, 50),
+    ["Astro Moon"]   = Color3.fromRGB(0, 195, 255),
+    ["Gold Moon"]            = Color3.fromRGB(255, 200, 50),
+    ["Love Moon"]            = Color3.fromRGB(240, 110, 170),
+    ["Abysall Moon"]= Color3.fromRGB(30, 90, 220),
+    ["Aurora Moon"]= Color3.fromRGB(0, 235, 100),
+    ["Full Moon"]           = Color3.fromRGB(255,255,100),
+    ["Vibrant Moon"]          = Color3.fromRGB(170, 70, 240)
 }
 
 -- Mặc định Theme
-local CURRENT_THEME = SKINS["Love Moon (hồng)"]
+local CURRENT_THEME = SKINS["Love Moon"]
 local ThemeColorObjects = {}
 local CURRENT_WINDOW = nil
 local UpdateMainColorPickerFunc = nil
@@ -112,7 +106,6 @@ local function ApplyTheme(newColor)
     end
 end
 
--- Quản lý Config & Trạng thái Element
 UI.NotifPosition = "Dưới giữa"
 UI.ConfigFolder = "PinkHub_Configs"
 UI.ElementsRegistry = {}
